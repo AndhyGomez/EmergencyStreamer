@@ -16,6 +16,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -37,7 +38,7 @@ public class MainActivity extends AppCompatActivity
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-/*
+
         // OnClickListener for record button
         redBoi = findViewById(R.id.rec_btn);
         redBoi.setOnClickListener(new View.OnClickListener()
@@ -47,7 +48,7 @@ public class MainActivity extends AppCompatActivity
                 videoCapture(view);
           }
         });
- */
+
     }
 
     public void videoCapture(View view)
@@ -57,6 +58,7 @@ public class MainActivity extends AppCompatActivity
         if (captureIntent.resolveActivity(getPackageManager()) != null)
         {
             startActivityForResult(captureIntent, REQUEST_CAPTURE);
+            //view.setBackgroundColor(Color.BLACK);
         }
     }
 
