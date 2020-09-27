@@ -5,9 +5,9 @@ This Emergency Streamer app contains a red button that will access the camera wh
 We live in a society wherein we might find ourselves in grave danger from one moment to the next. While leading our normal lives a regular day could take a turn for the worst, not only because of the many dangerous criminals that could hurt us, but also because of the people in positions of power that try to abuse us with no consequences.This app seeks to give people the ability to record secretly and safely while in a dangerous or abusive situation. 
 
 ## Code Example
-![JFrameSS]()
-![JFrameSS]()
-![JFrameSS]()
+![JFrameSS](https://user-images.githubusercontent.com/47075449/94377496-408c0000-00f0-11eb-8af0-965d69196680.PNG)
+![JFrameSS](https://user-images.githubusercontent.com/47075449/94377499-42ee5a00-00f0-11eb-97dd-c92b2542500d.PNG)
+![JFrameSS](https://user-images.githubusercontent.com/47075449/94377500-441f8700-00f0-11eb-88d3-a4c9d107de20.PNG)
 
 ## Installation
 The libraries imported in order to create this application were:
