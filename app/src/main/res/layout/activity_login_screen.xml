@@ -13,7 +13,7 @@
         android:layout_height="50dp"
         android:hint="Email"
         android:importantForAutofill="no"
-        android:inputType="text"
+        android:inputType="textEmailAddress"
         android:maxLines="1"
         android:textColor="#a8a8a8"
         android:textColorHint="#a8a8a8"
@@ -31,7 +31,7 @@
         android:layout_height="50dp"
         android:hint="Password"
         android:importantForAutofill="no"
-        android:inputType="text"
+        android:inputType="textPassword"
         android:maxLines="1"
         android:textColor="#a8a8a8"
         android:textColorHint="#a8a8a8"
@@ -81,6 +81,8 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.653" />
+
+
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
