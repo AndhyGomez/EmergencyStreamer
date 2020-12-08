@@ -1,19 +1,32 @@
 package com.example.streamingapp;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.analytics.FirebaseAnalytics;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthMultiFactorException;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.MultiFactorResolver;
+
 import java.util.ArrayList;
 
 public class LoginScreen extends AppCompatActivity
 {
+
     /*
      * Class Objects
      */
@@ -29,12 +42,20 @@ public class LoginScreen extends AppCompatActivity
 
     private static final String SALTBANK = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$~%^&*?.,";
 
+    private static final String TAG = "LoginActivity";
+
+    private FirebaseAuth mAuth;
+    private FirebaseAnalytics mFirebaseAnalytics;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login_screen);
+
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
+        mAuth = FirebaseAuth.getInstance();
 
         // Set OnClickListener for login button
         login = findViewById(R.id.loginbtn);
@@ -43,7 +64,6 @@ public class LoginScreen extends AppCompatActivity
             @Override
             public void onClick(View v)
             {
-                Boolean credentialsValid;
 
                 // Store email input
                 emailIn = findViewById(R.id.emailid);
@@ -53,17 +73,9 @@ public class LoginScreen extends AppCompatActivity
                 passIn = findViewById(R.id.passid);
                 passVal = passIn.getText().toString();
 
-                credentialsValid = isUserValid(emailVal, passVal);
+                signIn(emailVal, passVal);
 
-                if(credentialsValid)
-                {
-                    Toast.makeText(LoginScreen.this, "Login Success.", Toast.LENGTH_LONG).show();
 
-                    openMain(v);
-                }
-                else {
-                    Toast.makeText(LoginScreen.this, "Credentials Invalid.", Toast.LENGTH_LONG).show();
-                }
             }
         });
 
@@ -136,6 +148,15 @@ public class LoginScreen extends AppCompatActivity
         return isUserValid;
     }
 
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        // Check if user is signed in (non-null) and update UI accordingly.
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+
+    }
+
     /**
      * Description: Generate salt to aid password security
      *
@@ -204,4 +225,59 @@ public class LoginScreen extends AppCompatActivity
 
         return passwordHash;
     }
+
+
+    private void signIn(String email, String password) {
+        Log.d(TAG, "signIn:" + email);
+
+        // [START sign_in_with_email]
+        mAuth.signInWithEmailAndPassword(email, password)
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+                            // Sign in success, update UI with the signed-in user's information
+                            Log.d(TAG, "signInWithEmail:success");
+                            // FirebaseUser user = mAuth.getCurrentUser();
+                            Intent startingScreen = new Intent(LoginScreen.this, MainActivity.class);
+                            startActivity(startingScreen);
+
+                        } else {
+                            // If sign in fails, display a message to the user.
+                            Log.w(TAG, "signInWithEmail:failure", task.getException());
+                            Toast.makeText(LoginScreen.this, "Authentication failed.",
+                                    Toast.LENGTH_SHORT).show();
+                            // dont change screen
+                            // [START_EXCLUDE]
+                            checkForMultiFactorFailure(task.getException());
+                            // [END_EXCLUDE]
+                        }
+
+                        // [START_EXCLUDE]
+                        if (!task.isSuccessful()) {
+                            Toast.makeText(LoginScreen.this, "Authentication/login failed.",
+                                    Toast.LENGTH_SHORT).show();
+                        }
+
+                    }
+                });
+        // [END sign_in_with_email]
+    }
+
+    public void checkForMultiFactorFailure(Exception e) {
+        // Multi-factor authentication with SMS is currently only available for
+        // Google Cloud Identity Platform projects. For more information:
+        // https://cloud.google.com/identity-platform/docs/android/mfa
+        if (e instanceof FirebaseAuthMultiFactorException) {
+            Log.w(TAG, "multiFactorFailure", e);
+            Intent intent = new Intent();
+            MultiFactorResolver resolver = ((FirebaseAuthMultiFactorException) e).getResolver();
+            intent.putExtra("EXTRA_MFA_RESOLVER", resolver);
+            // change screeen
+            finish();
+        }
+    }
+
+
+
 }
