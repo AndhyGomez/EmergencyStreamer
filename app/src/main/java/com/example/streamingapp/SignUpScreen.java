@@ -1,18 +1,35 @@
 package com.example.streamingapp;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.analytics.FirebaseAnalytics;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
+import java.util.HashMap;
+import java.util.Map;
+
 import static com.example.streamingapp.LoginScreen.credentials;
 
 public class SignUpScreen extends AppCompatActivity
 {
+
 
     /*
      * Class Objects
@@ -32,12 +49,21 @@ public class SignUpScreen extends AppCompatActivity
 
     private static final String SALTBANK = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$~%^&*?.,";
 
+    /*
+    * Instance of the database and firebase for athentication
+     */
+    private FirebaseAuth mAuth;
+    private FirebaseAnalytics mFirebaseAnalytics;
+    private DatabaseReference reference;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up_screen);
+
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
+        mAuth = FirebaseAuth.getInstance();
 
         // Set OnClickListener for sign up button
         signUp = findViewById(R.id.signUp);
@@ -83,6 +109,9 @@ public class SignUpScreen extends AppCompatActivity
 
                     // Add user to array list
                     credentials.add(user);
+
+                    //Creating account
+                    createAccount();
 
                     Toast.makeText(SignUpScreen.this, "Account Created.", Toast.LENGTH_LONG).show();
 
@@ -181,4 +210,83 @@ public class SignUpScreen extends AppCompatActivity
 
         return passwordHash;
     }
+
+
+
+    public void saveExtraData(){
+
+        FirebaseUser firebaseUser = mAuth.getCurrentUser();
+        String userID = firebaseUser.getUid();
+
+        reference = FirebaseDatabase.getInstance().getReference("Users").child(userID);
+
+        Map<String, Object> user = new HashMap<>();
+        // format id, email, username
+        user.put("userID", userID);
+        user.put("KEY_USERNAME", userEmail);
+        user.put("search", userEmail.toLowerCase());
+
+
+        reference.setValue(user).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if(task.isSuccessful()){
+                    finish();
+                }
+
+            }
+        });
+
+
+
+    }
+
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        // Check if user is signed in (non-null) and update UI accordingly.
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+
+    }
+
+    public void createAccount(){
+
+        mAuth.createUserWithEmailAndPassword(userEmail, pass)
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+                            // Sign in success, update UI with the signed-in user's information
+                            Log.d("SignIn Success", "createUserWithEmail:success");
+                            FirebaseUser user = mAuth.getCurrentUser();
+
+                            user.sendEmailVerification()
+                                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<Void> task) {
+                                            if (task.isSuccessful()) {
+                                                Log.d("MainActivity", "Email sent.");
+                                                Toast.makeText(SignUpScreen.this, "Email has been sent", Toast.LENGTH_LONG).show();
+                                                saveExtraData();
+                                            }
+                                        }
+                                    });
+                            // where u would change to app screen
+
+                            Intent startingScreen = new Intent(SignUpScreen.this, LoginScreen.class);
+                            startActivity(startingScreen);
+
+                        } else {
+                            // If sign in fails, display a message to the user.
+                            Log.w("SignInFailed", "createUserWithEmail:failure", task.getException());
+                            Toast.makeText(SignUpScreen.this, "Authentication Failed", Toast.LENGTH_LONG).show();
+
+                        }
+                    }
+                });
+
+    }
+
+
 }
