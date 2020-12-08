@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "625335778278",
+    "project_id": "streamingapp-b2976",
+    "storage_bucket": "streamingapp-b2976.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:625335778278:android:dd1b3afb12e2e4ba203427",
+        "android_client_info": {
+          "package_name": "com.example.streamingapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "625335778278-e33ltukceap04u7dd1rm38na0jh3bp11.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAcE5gPxMc-EzNdgv2RQIbMwL0mtkNqlm4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "625335778278-e33ltukceap04u7dd1rm38na0jh3bp11.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
