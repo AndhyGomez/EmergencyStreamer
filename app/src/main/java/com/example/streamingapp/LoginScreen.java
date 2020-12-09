@@ -258,9 +258,11 @@ public class LoginScreen extends AppCompatActivity
                             Toast.makeText(LoginScreen.this, "Authentication failed.",
                                     Toast.LENGTH_SHORT).show();
 
+
+                            // Open Sign up Screen on failed authentication
                             Intent openWindow = new Intent(LoginScreen.this, SignUpScreen.class);
                             startActivity(openWindow);
-
+                            
                             // dont change screen
                             // [START_EXCLUDE]
                             checkForMultiFactorFailure(task.getException());
