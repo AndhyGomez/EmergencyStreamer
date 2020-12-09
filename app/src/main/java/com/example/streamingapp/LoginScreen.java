@@ -54,7 +54,6 @@ public class LoginScreen extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login_screen);
 
-
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
         mAuth = FirebaseAuth.getInstance();
 
@@ -77,15 +76,6 @@ public class LoginScreen extends AppCompatActivity
                 signIn(emailVal, passVal);
 
 
-            }
-        });
-
-        forgotPass = findViewById(R.id.forgotPass);
-
-        forgotPass.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(LoginScreen.this, ResetPasswordActivity.class));
             }
         });
 
@@ -257,10 +247,9 @@ public class LoginScreen extends AppCompatActivity
                             Log.w(TAG, "signInWithEmail:failure", task.getException());
                             Toast.makeText(LoginScreen.this, "Authentication failed.",
                                     Toast.LENGTH_SHORT).show();
-
+                            // Open Sign up Screen on failed authentication
                             Intent openWindow = new Intent(LoginScreen.this, SignUpScreen.class);
                             startActivity(openWindow);
-
                             // dont change screen
                             // [START_EXCLUDE]
                             checkForMultiFactorFailure(task.getException());
