@@ -27,5 +27,7 @@ We live in a society wherein we might find ourselves in grave danger from one mo
 
 ## License
 STU © Andhy Gomez
+
 STU © Jared Sullin
+
 STU © Carlos Aybar De Los Santos
